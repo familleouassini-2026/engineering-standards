@@ -44,3 +44,19 @@ macOS/Linux:
 ```
 
 Project-specific Steering files are intentionally **not overwritten** by the sync script.
+
+## Synchronize self-steering (this repository)
+
+This repository is self-consuming: it has its own `.kiro/steering/` that references
+the canonical files under `kiro/global-steering/` via `#[[file:]]` includes.
+
+To regenerate `.kiro/steering/` after editing canonical sources:
+
+macOS/Linux:
+
+```bash
+./scripts/sync-self-steering.sh
+```
+
+This does **not** duplicate content — the generated files contain only frontmatter,
+a provenance header, and a file reference to the canonical source.
