@@ -2,7 +2,7 @@
 inclusion: always
 ---
 
-<!-- GENERATED RUNTIME COPY — DO NOT EDIT INDEPENDENTLY
+<!-- GENERATED RUNTIME COPY -- DO NOT EDIT INDEPENDENTLY
      Canonical source: kiro/global-steering/security-baseline.md
      Regenerate with: scripts/sync-self-steering.sh or .ps1
      Any edits here will be overwritten on next sync. -->

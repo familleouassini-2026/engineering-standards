@@ -3,7 +3,7 @@
     Regenerates .kiro/steering/ from the canonical manifest.
 
 .DESCRIPTION
-    Uses #[[file:]] references — no content duplication.
+    Uses #[[file:]] references -- no content duplication.
 
     Phases:
       1. Parse and validate the entire manifest (no mutations).
@@ -13,7 +13,7 @@
     The script fails closed: any validation error aborts before any file
     is generated, overwritten, or deleted.
 
-    Cleanup dual condition — only deletes files that BOTH:
+    Cleanup dual condition -- only deletes files that BOTH:
       a) match the generated naming pattern (two-digit prefix + slug + .md); AND
       b) contain the exact generated ownership marker.
 
@@ -41,7 +41,7 @@ $Target = Join-Path $RuntimeKiroDir 'steering'
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
 # ============================================================
-# PHASE 1 — Parse and validate (no mutations)
+# PHASE 1 -- Parse and validate (no mutations)
 # ============================================================
 
 if (-not (Test-Path $Manifest)) {
@@ -138,7 +138,7 @@ if ($errors -gt 0) {
 Write-Host "Phase 1: Manifest validated ($($entries.Count) entries, 0 errors)."
 
 # ============================================================
-# PHASE 2 — Generate runtime steering files
+# PHASE 2 -- Generate runtime steering files
 # ============================================================
 
 if (-not (Test-Path $Target)) {
@@ -154,7 +154,7 @@ foreach ($entry in $entries) {
         'inclusion: always'
         '---'
         ''
-        "<!-- ${GeneratedMarker} — DO NOT EDIT INDEPENDENTLY"
+        "<!-- ${GeneratedMarker} -- DO NOT EDIT INDEPENDENTLY"
         "     Canonical source: $($entry.SourcePath)"
         '     Regenerate with: scripts/sync-self-steering.sh or .ps1'
         '     Any edits here will be overwritten on next sync. -->'
@@ -176,7 +176,7 @@ foreach ($entry in $entries) {
 Write-Host "Phase 2: Generated $($entries.Count) runtime steering files."
 
 # ============================================================
-# PHASE 3 — Cleanup obsolete generated files
+# PHASE 3 -- Cleanup obsolete generated files
 # ============================================================
 
 $cleaned = 0

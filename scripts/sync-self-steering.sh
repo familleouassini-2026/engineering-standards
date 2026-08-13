@@ -149,7 +149,7 @@ echo "${entries}" | while IFS='|' read -r prefix source_path title; do
 inclusion: always
 ---
 
-<!-- ${GENERATED_MARKER} — DO NOT EDIT INDEPENDENTLY
+<!-- ${GENERATED_MARKER} -- DO NOT EDIT INDEPENDENTLY
      Canonical source: ${source_path}
      Regenerate with: scripts/sync-self-steering.sh or .ps1
      Any edits here will be overwritten on next sync. -->
