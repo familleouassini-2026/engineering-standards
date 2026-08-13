@@ -32,8 +32,10 @@ $GeneratedPattern = '^[0-9]{2}-[a-z][-a-z0-9]*\.md$'
 # Resolve repository root (scripts/ is one level below root)
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Root = Split-Path -Parent $ScriptDir
-$Manifest = Join-Path $Root 'kiro' 'self-steering-manifest.txt'
-$Target = Join-Path $Root '.kiro' 'steering'
+$KiroDir = Join-Path $Root 'kiro'
+$Manifest = Join-Path $KiroDir 'self-steering-manifest.txt'
+$RuntimeKiroDir = Join-Path $Root '.kiro'
+$Target = Join-Path $RuntimeKiroDir 'steering'
 
 # UTF-8 without BOM encoder
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
