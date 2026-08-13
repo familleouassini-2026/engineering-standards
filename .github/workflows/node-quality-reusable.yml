@@ -1,0 +1,67 @@
+name: Reusable Node Quality Gate
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version
+        required: false
+        type: string
+        default: "20"
+      working-directory:
+        description: Working directory
+        required: false
+        type: string
+        default: "."
+      run-typecheck:
+        required: false
+        type: boolean
+        default: true
+      run-lint:
+        required: false
+        type: boolean
+        default: true
+      run-tests:
+        required: false
+        type: boolean
+        default: true
+      run-build:
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        if: ${{ inputs.run-typecheck }}
+        run: npm run typecheck
+
+      - name: Lint
+        if: ${{ inputs.run-lint }}
+        run: npm run lint
+
+      - name: Tests
+        if: ${{ inputs.run-tests }}
+        run: npm test -- --runInBand
+        env:
+          CI: "true"
+
+      - name: Build
+        if: ${{ inputs.run-build }}
+        run: npm run build
