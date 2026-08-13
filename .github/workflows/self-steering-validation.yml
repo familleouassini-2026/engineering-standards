@@ -1,0 +1,103 @@
+name: Self-Steering Validation
+
+on:
+  push:
+    paths:
+      - '.kiro/steering/**'
+      - 'kiro/global-steering/**'
+      - 'kiro/self-steering-manifest.txt'
+      - 'scripts/sync-self-steering.sh'
+      - 'scripts/sync-self-steering.ps1'
+  pull_request:
+    paths:
+      - '.kiro/steering/**'
+      - 'kiro/global-steering/**'
+      - 'kiro/self-steering-manifest.txt'
+      - 'scripts/sync-self-steering.sh'
+      - 'scripts/sync-self-steering.ps1'
+
+jobs:
+  validate-linux:
+    name: Shell synchronization (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run sync-self-steering.sh
+        run: |
+          chmod +x scripts/sync-self-steering.sh
+          bash scripts/sync-self-steering.sh
+
+      - name: Verify generated steering matches committed state
+        run: |
+          if git diff --exit-code .kiro/steering/; then
+            echo "✓ Generated steering matches committed state."
+          else
+            echo "✗ Generated steering differs from committed state."
+            echo "Run scripts/sync-self-steering.sh and commit the result."
+            exit 1
+          fi
+
+      - name: Verify idempotency (second run produces no diff)
+        run: |
+          bash scripts/sync-self-steering.sh > /dev/null 2>&1
+          if git diff --exit-code .kiro/steering/; then
+            echo "✓ Idempotent: second run produced no diff."
+          else
+            echo "✗ Second run produced a diff — not idempotent."
+            exit 1
+          fi
+
+  validate-windows:
+    name: PowerShell synchronization (Windows PS 5.1)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Print PowerShell version
+        shell: powershell
+        run: |
+          Write-Host "PowerShell Version:"
+          $PSVersionTable.PSVersion
+
+      - name: Run sync-self-steering.ps1
+        shell: powershell
+        run: |
+          & .\scripts\sync-self-steering.ps1
+          if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Verify expected runtime steering files exist
+        shell: powershell
+        run: |
+          $expected = @(
+            '00-engineering-foundation.md',
+            '01-security-baseline.md',
+            '02-testing-baseline.md',
+            '03-documentation-language.md',
+            '04-ai-execution-rules.md'
+          )
+          $steeringDir = Join-Path (Get-Location) '.kiro\steering'
+          $missing = @()
+          foreach ($file in $expected) {
+            $path = Join-Path $steeringDir $file
+            if (-not (Test-Path $path)) {
+              $missing += $file
+            }
+          }
+          if ($missing.Count -gt 0) {
+            Write-Error "Missing expected files: $($missing -join ', ')"
+            exit 1
+          }
+          Write-Host "All $($expected.Count) expected runtime steering files exist."
+
+      - name: Verify idempotency (second run produces no diff)
+        shell: powershell
+        run: |
+          & .\scripts\sync-self-steering.ps1
+          if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $diff = git diff --name-only .kiro/steering/
+          if ($diff) {
+            Write-Error "Second run produced changes: $diff"
+            exit 1
+          }
+          Write-Host "Idempotent: second run produced no diff."
