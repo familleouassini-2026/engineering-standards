@@ -1,0 +1,29 @@
+# Self-Steering Manifest
+#
+# Authoritative mapping of canonical steering files to their generated
+# runtime copies under .kiro/steering/.
+#
+# Format: <sort-prefix> <canonical-relative-path> <title>
+#
+# - sort-prefix: two-digit number controlling load order
+# - canonical-relative-path: path relative to repository root
+# - title: human-readable name used in generated file headers
+#
+# Both scripts/sync-self-steering.sh and scripts/sync-self-steering.ps1
+# consume this manifest. Do not create a second mapping elsewhere.
+#
+# To add a new canonical steering file:
+#   1. Create the file under kiro/global-steering/
+#   2. Add a line to this manifest
+#   3. Run the synchronization script
+#
+# To remove a canonical steering file:
+#   1. Remove its line from this manifest
+#   2. Run the synchronization script (obsolete generated file is deleted)
+#   3. Remove the canonical file if no longer needed
+
+00 kiro/global-steering/engineering-foundation.md Engineering Foundation
+01 kiro/global-steering/security-baseline.md Security Baseline
+02 kiro/global-steering/testing-baseline.md Testing Baseline
+03 kiro/global-steering/documentation-language.md Documentation Language
+04 kiro/global-steering/ai-execution-rules.md AI Execution Rules
