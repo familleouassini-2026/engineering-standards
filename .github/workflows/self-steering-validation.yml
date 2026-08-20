@@ -21,7 +21,7 @@ jobs:
     name: Shell synchronization (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Run sync-self-steering.sh
         run: |
@@ -52,7 +52,7 @@ jobs:
     name: PowerShell synchronization (Windows PS 5.1)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Print PowerShell version
         shell: powershell
